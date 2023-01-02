@@ -1,11 +1,12 @@
-// import sql, inquirer, and console.table
+// import sql, inquirer, and console.table ======================================================================
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
 
+//connection to database ========================================================================================
 const connection = mysql.createConnection({
     host: 'localhost',
-    port: 3001,
+    port: 3306,
     user: 'root',
     password: 'qIt&Ac+5@aSwosasPUSw',
     database: 'company_db',
@@ -14,9 +15,11 @@ const connection = mysql.createConnection({
 connection.connect(err => {
     if (err) throw err;
     console.log('Welcome to Employee Tracker!')
-    startMenu();
+    firstPrompt();
 });
 
+
+//first prompt to start ==========================================================================================
 const firstPrompt = () => {
     inquirer.prompt({
         type: 'list',
@@ -30,9 +33,10 @@ const firstPrompt = () => {
             'Add Employee',
             'Add Job',
             'Update an Employee Job',
-            'Remove Department',
-            'Remove Employee',
-            'Remove Job',
+     //add later to improve user experience ======================================================================
+            // 'Remove Department',
+            // 'Remove Employee',
+            // 'Remove Job',
             'Exit'
         ],
     })
@@ -65,18 +69,19 @@ const firstPrompt = () => {
                 case 'Update an Employee Job':
                     updateEmployee();
                     break;
+// update later ==============================================================================================
+               
+                // case 'Remove Department':
+                //     removeDepartment();
+                //     break;
 
-                case 'Remove Department':
-                    removeDepartment();
-                    break;
+                // case 'Remove Employee':
+                //     removeEmployee();
+                //     break;
 
-                case 'Remove Employee':
-                    removeEmployee();
-                    break;
-
-                case 'Remove Job':
-                    removeJob();
-                    break;
+                // case 'Remove Job':
+                    // removeJob();
+                    // break;
 
                 case 'Exit':
                     connection.end();
@@ -85,4 +90,164 @@ const firstPrompt = () => {
             }
         });
 };
+// view all departments ========================================================================================
+const viewDepartments = () => {
+    connection.query('SELECT * FROM department', function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        firstPrompt();
+    });
+};
+// view all employees ===========================================================================================
+const viewEmployees = () => {
+    connection.query('SELECT employee.id, first_name, last_name, title, salary, dept_name, manager_id FROM ((department JOIN job ON department.id = job.department_id) JOIN employee ON job.id = employee.job_id);', 
+        function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        firstPrompt();
+    });
+};
+// view all jobs ================================================================================================
+const viewJobs = () => {
+    connection.query('SELECT * FROM job', function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        firstPrompt();
+    });
+};
 
+// add new department ===========================================================================================
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'department',
+            message: 'What would you like to name this Department?',
+        },
+    ])
+    .then(answer => {
+        connection.query(
+            'INSERT INTO department (name) VALUES (?)'
+            [answer.department],
+            function (err, res) {
+                if (err) throw err;
+                console.log('Department Added!')
+                firstPrompt();
+            }
+        );
+    });
+};
+
+//add new employee =============================================================================================
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: "What is the employee's first name?",
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: "What is the employee's last name?",
+        },
+        {
+            type: 'input',
+            name: 'job_id',
+            message: "What is the employee's job ID?",
+        },
+        {
+            type: 'input',
+            name: 'manager_id',
+            message: "What is the manager's ID?",
+        },
+    ])
+    .then(answer => {
+        connection.query(
+            'INSERT INTO employee (first_name, last_name, job_id, manager_id) VALUES (?, ?, ?, ?)',
+            [answer.first_name, answer.last_name, answer.job_id, answer.manager_id],
+            function (err,res) {
+                if (err) throw err;
+                console.log('Employee Added!');
+                firstPrompt();
+            }
+        );
+    });
+};
+
+// add new job ==================================================================================================
+const addJob = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'job_title',
+            message: "What is the job title?",
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: "What is the salary for this job?",
+        },
+        {
+            type: 'input',
+            name: 'dept_id',
+            message: "What is the department ID number?",
+        },
+    ])
+    .then(answer => {
+        connection.query(
+            'INSERT INTO job (title, salary, department_id) VALUES (?, ?, ?)',
+            [answer.job_title, answer.salary, answer.dept_id],
+            function (err, res) {
+                if (err) throw err;
+                console.log('Job added!');
+                firstPrompt();
+            }
+        )
+    })
+};
+
+// make change to current employee by ID ========================================================================
+const updateEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'id',
+            message: "Enter employee ID",
+        },
+        {
+            type: 'input',
+            name: 'job_id',
+            message: "Enter new job ID",
+        },
+    ])
+    .then(answer => {
+        connection.query(
+            'UPDATE employee SET job_id=? WHERE id=?',
+            [answer.job_id, answer.id],
+            function (err, res) {
+                if (err) throw err;
+                console.log('Employee updated!');
+                firstPrompt();
+            }
+        );
+    });
+};
+
+// const removeDepartment = () => {
+// inquirer.prompt([
+//     {
+//         type: 'input',
+//         name: 'dept_id',
+//         message: 'What is the department ID number?',
+//     }
+// ])
+// }
+
+// const removeEmployee = () => {
+
+// }
+
+// const removeJob = () => {
+
+// }
