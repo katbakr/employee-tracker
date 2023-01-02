@@ -127,7 +127,7 @@ const addDepartment = () => {
     ])
     .then(answer => {
         connection.query(
-            'INSERT INTO department (name) VALUES (?)'
+            'INSERT INTO department (dept_name) VALUES ()'
             [answer.department],
             function (err, res) {
                 if (err) throw err;
@@ -164,7 +164,7 @@ const addEmployee = () => {
     ])
     .then(answer => {
         connection.query(
-            'INSERT INTO employee (first_name, last_name, job_id, manager_id) VALUES (?, ?, ?, ?)',
+            'INSERT INTO employee (first_name, last_name, job_id, manager_id) VALUES ()',
             [answer.first_name, answer.last_name, answer.job_id, answer.manager_id],
             function (err,res) {
                 if (err) throw err;
@@ -196,7 +196,7 @@ const addJob = () => {
     ])
     .then(answer => {
         connection.query(
-            'INSERT INTO job (title, salary, department_id) VALUES (?, ?, ?)',
+            'INSERT INTO job (title, salary, department_id) VALUES ()',
             [answer.job_title, answer.salary, answer.dept_id],
             function (err, res) {
                 if (err) throw err;
@@ -223,7 +223,7 @@ const updateEmployee = () => {
     ])
     .then(answer => {
         connection.query(
-            'UPDATE employee SET job_id=? WHERE id=?',
+            'UPDATE employee SET job_id=() WHERE id=()',
             [answer.job_id, answer.id],
             function (err, res) {
                 if (err) throw err;
