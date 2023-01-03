@@ -15,7 +15,7 @@
   * [Contributing](#contributing)
   * [Questions](#questions)
 
-
+![Screenshot](./assets/images/Screenshot%20(207).png)
   ## Description
   This application is meant to make it easy to access departments, employees, and jobs in an organization. The particular example that I used to seed this application was a store with various departments, jobs that could be found in those particular departments, and fake employees that hold those jobs. This application can be used to easily see a list of departments and add a new department. See a list of jobs that are in the database and their salary/manager. And to see a list of employees, their job, salary, and manager. 
 
