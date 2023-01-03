@@ -32,7 +32,8 @@
 
  
   ### Walkthrough Video
-  [Click Here]()
+  [Click Here](https://www.youtube.com/watch?v=YjV_-SbBqRg)    
+  **If video loads blurry, check your video quality setting on youtube. It is most clear when using the 1080p option but also ledgible using 720p.**
 
 
 ## License
